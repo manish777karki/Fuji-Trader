@@ -1,59 +1,36 @@
-//+------------------------------------------------------------------+
-//|                     FujiFilters.mqh                              |
-//|     Filters: ATR, RSI, Session Time checks                       |
-//+------------------------------------------------------------------+
-
 #ifndef __FUJI_FILTERS__
 #define __FUJI_FILTERS__
 
-//--- ATR Volatility Check
-bool IsATRVolatilitySufficient()
+//--- Check if ATR is above threshold
+bool IsATRVolatilitySufficient(string symbol, ENUM_TIMEFRAMES tf, int atrPeriod, double threshold)
 {
-   if (!UseATRFilter)
-      return true;
+   int handle = iATR(symbol, tf, atrPeriod);
+   if (handle == INVALID_HANDLE) return false;
 
-   double atr = iATR(_Symbol, _Period, ATRPeriod, 0);
-   if (atr >= ATRThreshold)
-      return true;
+   double atr[];
+   if (CopyBuffer(handle, 0, 0, 1, atr) <= 0) return false;
 
-   if (DebugMode)
-      Print("[ATR] Skipped: ATR=", atr, " < Threshold=", ATRThreshold);
-
-   return false;
+   return atr[0] >= threshold;
 }
 
-//--- RSI Range Check (between 40–50)
-bool IsRSIWithinRange()
+//--- Check if RSI is within a range
+bool IsRSIWithinRange(string symbol, ENUM_TIMEFRAMES tf, int rsiPeriod, double low, double high)
 {
-   if (!UseRSIFilter)
-      return true;
+   int handle = iRSI(symbol, tf, rsiPeriod, PRICE_CLOSE);
+   if (handle == INVALID_HANDLE) return false;
 
-   double rsi = iRSI(_Symbol, _Period, RSIPeriod, PRICE_CLOSE, 0);
-   if (rsi >= RSILower && rsi <= RSIUpper)
-      return true;
+   double rsi[];
+   if (CopyBuffer(handle, 0, 0, 1, rsi) <= 0) return false;
 
-   if (DebugMode)
-      Print("[RSI] Skipped: RSI=", rsi, " not between ", RSILower, "-", RSIUpper);
-
-   return false;
+   return (rsi[0] >= low && rsi[0] <= high);
 }
 
-//--- Session Filter (broker time)
+//--- Limit to session (default 8–18)
 bool CanTradeNow()
 {
-   if (!UseSessionFilter)
-      return true;
-
-   datetime now = TimeCurrent();
-   int hour = TimeHour(now);
-
-   if (hour >= SessionStartHour && hour < SessionEndHour)
-      return true;
-
-   if (DebugMode)
-      Print("[Session] Skipped: Current hour=", hour, " outside ", SessionStartHour, "-", SessionEndHour);
-
-   return false;
+   MqlDateTime t;
+   TimeToStruct(TimeTradeServer(), t);
+   return (t.hour >= 8 && t.hour <= 18);
 }
 
 #endif
