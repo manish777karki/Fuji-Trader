@@ -1,56 +1,57 @@
-# 📈 Fuji Trader v1.1 for MetaTrader 5
+# FujiTrader v1.1
 
-**Fuji Trader v1.1** is a fully automated, precision-engineered forex trading Expert Advisor (EA) for MetaTrader 5.  
-Designed to be the **cleanest, safest, and smartest algo bot** for live environments, Fuji Trader is built from the ground up with modular, testable components and world-class execution logic.
-
----
-
-## ⚙️ Version Info
-
-- **EA Name**: Fuji Trader
-- **Version**: 1.10
-- **Platform**: MetaTrader 5
-- **Copyright**: © 2025 Manish Karki (Acosma Solutions)
-- **Website**: [https://acosmasolutions.com.au](https://acosmasolutions.com.au)
+> Author: Manish Karki (Acosma Solutions)  
+> Platform: MetaTrader 5 (MQL5)  
+> Status: Finalized and deployed as v1.1 baseline
 
 ---
 
-## 🚀 Key Features
+## ✅ What We Built
 
-- ✅ **Bullish engulfing entry strategy**
-- ✅ **RSI momentum filter (40–50 zone)**
-- ✅ **ATR volatility breakout filter**
-- ✅ **Strict session filter (London/NY)**
-- ✅ **Dynamic risk-based lot sizing**
-- ✅ **Fixed SL/TP with RR multiplier**
-- ✅ **Modular structure: easy to extend**
-- ✅ **Symbol whitelist for safety**
-- ✅ **Full debug logs for transparency**
-- ✅ **Zero martingale, zero grid — clean SL on every trade**
+FujiTrader v1.1 is a clean, modular rebuild of the original EA with improved structure, reliability, and execution control. It includes:
 
----
-
-## 🎯 Input Parameters
-
-| Name              | Description                            | Default     |
-|-------------------|----------------------------------------|-------------|
-| `RiskPercent`     | % of balance risked per trade          | 1.0         |
-| `RRMultiplier`    | Reward-to-Risk ratio                   | 1.5         |
-| `Slippage`        | Max slippage in points                 | 5           |
-| `MagicNumber`     | Unique ID for trade tracking           | 202501      |
-| `UseATRFilter`    | Require ATR above threshold            | true        |
-| `ATRPeriod`       | ATR indicator period                   | 14          |
-| `ATRThreshold`    | Minimum ATR to allow trades            | 0.0006      |
-| `UseRSIFilter`    | Check RSI zone                         | true        |
-| `RSIPeriod`       | RSI period                             | 14          |
-| `RSILower`        | Minimum RSI                            | 40          |
-| `RSIUpper`        | Maximum RSI                            | 50          |
-| `UseSessionFilter`| Restrict trading hours                 | true        |
-| `SessionStartHour`| Start hour (broker time)               | 7           |
-| `SessionEndHour`  | End hour (broker time)                 | 20          |
-| `AllowedSymbols`  | Comma-separated allowed symbols        | EURUSD,GBPUSD,USDJPY,AUDUSD |
+- Modular file structure (Constants, Utils, Risk, Strategy)
+- RSI-based trade filtering
+- Bullish Engulfing confirmation
+- ATR volatility filter
+- Trading session filter (Asia, Europe, US)
+- Broker-safe SL/TP validation
+- Risk-based lot sizing
+- Simple logging and error handling
 
 ---
 
-## 📁 File Structure
+## ✅ What We Fixed (from v1.0)
+
+- Replaced broken or outdated logic (no more MarketInfo / invalid includes)
+- Eliminated all "Invalid Stops" and SL/TP errors
+- Rewrote all indicator and buffer handling using native MQL5 standards
+- Removed function duplication and conflicting includes
+- Fully separated logic layers for easier testing and upgrades
+
+---
+
+## ⚠️ Known Limitations / Outstanding Issues
+
+- Only supports **Buy** logic (no Sell trades yet)
+- No trailing stop or breakeven logic
+- No trend filter or market structure validation
+- No multi-symbol trading loop (only runs on current chart symbol)
+- Strategy signals (RSI 40–50 + Engulfing) may need refinement to improve trade quality
+
+---
+
+## 🛠 Next Version: FujiTrader v1.2 (Planned Enhancements)
+
+- Add Sell logic
+- Introduce trend confirmation (e.g. MA filter)
+- Improve entry conditions (structure zones, candle context)
+- Optional: trailing stop / breakeven
+- Optional: multi-symbol loop with risk controls
+
+---
+
+## 🔐 v1.1 Status
+
+This version is now locked and archived. All future updates will build directly on this version — no rewrites, no resets.
 
