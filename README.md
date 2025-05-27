@@ -1,57 +1,61 @@
-# FujiTrader v1.1
+# FujiTrader v1.2.2
 
-> Author: Manish Karki (Acosma Solutions)  
-> Platform: MetaTrader 5 (MQL5)  
-> Status: Finalized and deployed as v1.1 baseline
+A MetaTrader 5 Expert Advisor (EA) designed for risk-controlled algorithmic trading using modular filters and candle pattern logic.
 
----
+## ⚠️ Current Status (v1.2.2)
 
-## ✅ What We Built
-
-FujiTrader v1.1 is a clean, modular rebuild of the original EA with improved structure, reliability, and execution control. It includes:
-
-- Modular file structure (Constants, Utils, Risk, Strategy)
-- RSI-based trade filtering
-- Bullish Engulfing confirmation
-- ATR volatility filter
-- Trading session filter (Asia, Europe, US)
-- Broker-safe SL/TP validation
-- Risk-based lot sizing
-- Simple logging and error handling
+🚨 **NOT PROFITABLE**  
+🔧 Engine is stable, but strategy is broken.  
+🔥 High trade volume, high drawdown, and no statistical edge.
 
 ---
 
-## ✅ What We Fixed (from v1.0)
+## ✅ What's Working
 
-- Replaced broken or outdated logic (no more MarketInfo / invalid includes)
-- Eliminated all "Invalid Stops" and SL/TP errors
-- Rewrote all indicator and buffer handling using native MQL5 standards
-- Removed function duplication and conflicting includes
-- Fully separated logic layers for easier testing and upgrades
-
----
-
-## ⚠️ Known Limitations / Outstanding Issues
-
-- Only supports **Buy** logic (no Sell trades yet)
-- No trailing stop or breakeven logic
-- No trend filter or market structure validation
-- No multi-symbol trading loop (only runs on current chart symbol)
-- Strategy signals (RSI 40–50 + Engulfing) may need refinement to improve trade quality
+- Modular architecture using `.mqh` includes
+- Configurable filters: ATR, RSI, Time, Session
+- Risk-based lot sizing with leverage support
+- Trade execution with logging
+- Engulfing pattern detection logic
+- Filter diagnostics per trade (via `FilterReport`)
+- Clean separation of config, constants, strategy, execution
 
 ---
 
-## 🛠 Next Version: FujiTrader v1.2 (Planned Enhancements)
+## ❌ What's Broken
 
-- Add Sell logic
-- Introduce trend confirmation (e.g. MA filter)
-- Improve entry conditions (structure zones, candle context)
-- Optional: trailing stop / breakeven
-- Optional: multi-symbol loop with risk controls
+| Problem                         | Description                                              |
+|----------------------------------|----------------------------------------------------------|
+| ❌ Overtrading                   | 40,000+ trades/month due to no bar lock or position check |
+| ❌ Poor strategy logic           | Relies only on basic engulfing pattern (low edge)       |
+| ❌ No trade tracking             | Trades repeatedly on same candle/tick                   |
+| ❌ Static SL/TP                  | Fixed 200 pip SL, not adapted to volatility             |
+| ❌ No trend awareness            | Entries made blindly regardless of price context        |
+| ❌ High risk/low reward profile  | Net loss, poor expectancy, PF < 1.0                     |
 
 ---
 
-## 🔐 v1.1 Status
+## ⚙️ Inputs (From `FujiConfig.mqh`)
 
-This version is now locked and archived. All future updates will build directly on this version — no rewrites, no resets.
+```mq5
+input double   RiskPercent      = 1.0;
+input double   RRMultiplier     = 1.5;
+input double   Slippage         = 5;
+input int      MagicNumber      = 202501;
 
+input bool     UseSessionFilter = true;
+input bool     UseATRFilter     = true;
+input bool     UseRSIFilter     = true;
+input bool     UseEngulfing     = true;
+
+input int      ATRPeriod        = 14;
+input double   ATRThreshold     = 0.0006;
+
+input int      RSIPeriod        = 14;
+input int      RSILower         = 40;
+input int      RSIUpper         = 50;
+
+input int      SessionStartHour = 7;
+input int      SessionEndHour   = 20;
+
+input string   AllowedSymbols   = "EURUSD,GBPUSD,USDJPY,AUDUSD";
